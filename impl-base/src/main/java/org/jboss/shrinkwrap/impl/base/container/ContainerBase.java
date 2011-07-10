@@ -1192,14 +1192,14 @@ public abstract class ContainerBase<T extends Archive<T>> extends AssignableBase
       return addPackages(false, pack);
    }
    
+   /*
+    * (non-Javadoc)
+    * @see org.jboss.shrinkwrap.api.container.ClassContainer#addDefaultPackage()
+    */
+   @Override
    public T addDefaultPackage()
    {
-      return addDefaultPackage(false);
-   }
-   
-   public T addDefaultPackage(boolean recursive)
-   {
-      return addPackages(recursive, DEFAULT_PACKAGE_NAME);
+      return addPackages(false, DEFAULT_PACKAGE_NAME);
    }
    
    /* (non-Javadoc)

@@ -93,6 +93,23 @@ public interface ClassContainer<T extends Archive<T>> extends ResourceContainer<
     * @see #addPackages(boolean, Package...)
     */
    T addPackage(Package pack) throws IllegalArgumentException;
+   
+   /**
+    * Adds all classes in the default {@link Package} to the {@link Archive}.
+    * <br/>
+    * SubPackages are excluded.
+    * 
+    * @return This virtual archive
+    */
+   T addDefaultPackage();
+   
+   /**
+    * Adds all classes in the default {@link Package} to the {@link Archive}.
+    * 
+    * @param recursive Should the sub packages be added
+    * @return This virtual archive
+    */
+   T addDefaultPackage(boolean recursive);
 
    /**
     * Adds all classes in the specified {@link Package}s to the {@link Archive}. 

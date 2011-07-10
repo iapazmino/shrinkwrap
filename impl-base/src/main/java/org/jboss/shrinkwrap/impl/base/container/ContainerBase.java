@@ -75,6 +75,7 @@ public abstract class ContainerBase<T extends Archive<T>> extends AssignableBase
    
    private static final Archive<?>[] CAST = new Archive[]{};
    private static final String DEFAULT_MANIFEST = "DefaultManifest.MF";
+   private static final String DEFAULT_PACKAGE_NAME = "";
    
    //-------------------------------------------------------------------------------------||
    // Instance Members -------------------------------------------------------------------||
@@ -1125,7 +1126,8 @@ public abstract class ContainerBase<T extends Archive<T>> extends AssignableBase
                   };
                },
                clazz.getClassLoader(),
-               clazz.getPackage()
+               //Assumes a null package is a class in the default package
+               clazz.getPackage() == null ? DEFAULT_PACKAGE_NAME : clazz.getPackage().getName()
          );
       }
       return covarientReturn();
@@ -1190,6 +1192,16 @@ public abstract class ContainerBase<T extends Archive<T>> extends AssignableBase
       return addPackages(false, pack);
    }
    
+   public T addDefaultPackage()
+   {
+      return addDefaultPackage(false);
+   }
+   
+   public T addDefaultPackage(boolean recursive)
+   {
+      return addPackages(recursive, DEFAULT_PACKAGE_NAME);
+   }
+   
    /* (non-Javadoc)
     * @see org.jboss.shrinkwrap.api.container.ClassContainer#addPackages(boolean, java.lang.String[])
     */
@@ -1237,6 +1249,9 @@ public abstract class ContainerBase<T extends Archive<T>> extends AssignableBase
 
    private void addPackage(final boolean recursive, final Filter<ArchivePath> filter, final ClassLoader classLoader, String packageName)
    {
+      //precondition checks
+      Validate.notNull(packageName, "Package doesn't exist");
+      
       final URLPackageScanner.Callback callback = new URLPackageScanner.Callback()
       {
          @Override
@@ -1252,8 +1267,7 @@ public abstract class ContainerBase<T extends Archive<T>> extends AssignableBase
             add(asset, location);
          }
       };
-      final URLPackageScanner scanner = packageName == null ? URLPackageScanner.newInstance(recursive,
-            classLoader, callback) : URLPackageScanner.newInstance(recursive, classLoader, callback, packageName);
+      final URLPackageScanner scanner = URLPackageScanner.newInstance(recursive, classLoader, callback, packageName);
       scanner.scanPackage();
    }
 
